@@ -75,7 +75,7 @@ html, body {
   height: 16vh;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-top: 10px;
 }
 
@@ -84,45 +84,54 @@ html, body {
   width:100%;
   height:100%;
   z-index: 4;
+
 }
 
 #NW, #N, #NE {
   position: absolute;
   top:0%;
   z-index: 5;
-}
-
-#W, #E {
-  position: absolute;
-  top:45%;
-  z-index: 5;
+  transform:translate(-100%,-100%) scale(1.5);
 }
 
 #SW, #S, #SE {
   position: absolute;
-  top:81%;
+  top:100%;
   z-index: 5;
+  transform:translate(-100%,-100%) scale(1.5);
 }
 
 #NW, #W, #SW {
   position: absolute;
-  left:5%;
+  left:0%;
   z-index: 5;
+  transform:translate(-50%,-100%) scale(1.5);
 }
 
 #NE, #E, #SE {
   position: absolute;
-  left:87%;
+  left:100%;
   z-index: 5;
+  transform:translate(-50%,-100%) scale(1.5);
 }
 
 #N, #S {
   position: absolute;
-  left:47%;
+  left:50%;
   z-index: 5;
+  transform:translate(-50%,-100%) scale(2);
 }
 
+#W, #E {
+  position: absolute;
+  top:50%;
+  z-index: 5;
+  transform:translate(-50%,-100%) scale(2);
+}
 
+#nomeeplepos{
+  display: none;
+}
 
 
 input, select, button{
@@ -158,7 +167,7 @@ input[type="number"]{
 
 }
 
-input[type="checkbox"], input[type="radio"] {
+input[type="checkbox"] {
   transform:scale(2, 2);
   vertical-align:middle;
 }
