@@ -164,6 +164,7 @@ input, select {
 
 input[type="number"]{
     width: 25%;
+    color: black;
 
 }
 
@@ -171,6 +172,14 @@ input[type="checkbox"] {
   transform:scale(2, 2);
   vertical-align:middle;
 }
+
+
+input:disabled {
+            /*css declaration to make 
+            font-color of disable input
+            black*/
+            color: rgb(158, 158, 158);
+        }
 
 
 
@@ -231,22 +240,6 @@ button:disabled  {
   text-align: left;
 }
 
-     
-.glow {
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
-}
-
-@-webkit-keyframes glow {
-  from {
-    text-shadow: 0 0 0.1em white, 0 0 0.2em white, 0 0 0.3em white, 0 0 0.5em gold;
-  }
-  
-  to {
-    text-shadow: 0 0 0.2em white, 0 0 0.3em gold, 0 0 0.4em gold, 0 0 0.6em gold;
-  }
-} 
 
 
 @font-face {
@@ -451,7 +444,7 @@ textarea {
 
 
 
-        <button id="add" class="bigfont" onclick="recordTurn()">Record turn (1 of 71)</button>
+        <button id="add" class="bigfont" onclick="recordTurn()">Record start tile orientation</button>
 
         <br>
 
@@ -482,7 +475,9 @@ textarea {
     document.getElementById("orientation").addEventListener("click", rotate)
 
     //count the number of turns, start tile = 0
-    turns = 1
+    turns = 0
+    // trigger start tile position
+    startTile()
 
     //start all variables and things needed to be blank every new turn.
     function setDefault(){
@@ -504,6 +499,43 @@ textarea {
 
     }
     
+
+//disable multiple elements but rotation and load start tile
+function startTile(){
+  if (turns == 0){
+    document.getElementById("id1").value = "c"
+    document.getElementById("id2").value = "r"
+    document.getElementById("id3").value = "f"
+    document.getElementById("id4").value = "r"
+    var inputs = document.querySelectorAll("input,select"); 
+    for (var i = 0; i < inputs.length; i++) { 
+        inputs[i].disabled = "disabled";
+    } 
+    var labels = document.querySelectorAll("label"); 
+    for (var i = 0; i < labels.length; i++) { 
+      labels[i].style.color = "#9E9E9E";
+    } 
+  }
+}
+
+
+function cleanStartTile(){
+    document.getElementById("id1").value = "f"
+    document.getElementById("id2").value = "f"
+    document.getElementById("id3").value = "f"
+    document.getElementById("id4").value = "f"
+    loadtile()
+    var inputs = document.querySelectorAll("input,select"); 
+    for (var i = 0; i < inputs.length; i++) { 
+        inputs[i].disabled = "";
+    } 
+    var labels = document.querySelectorAll("label"); 
+    for (var i = 0; i < labels.length; i++) { 
+      labels[i].style.color = "black";
+    } 
+  }
+
+
 
 
 
@@ -603,10 +635,10 @@ function recordTurn(){
     } 
 
 
-    //add turn to list
-    textArea.value += turns + ". "  
-    + playerIdentity 
-    + ":"
+    //add turn to list (special considerations with turn 0)
+    textArea.value += (turns > 0 ? turns + ". " : "")
+    + (turns > 0 ? playerIdentity : "") 
+    + (turns > 0 ? ":" : "")
     + "[" + ((posx.value > 0) ? "+"+posx.value : posx.value) 
     + ";"
     + ((posy.value > 0) ? "+"+posy.value : posy.value) 
@@ -622,14 +654,22 @@ function recordTurn(){
 
     //scroll to the bottom of the textarea
     textArea.scrollTop = textArea.scrollHeight;
+
     //clean everything
     setDefault()
-    
+
+    //exit from startTile mode
+    if (turns == 0){cleanStartTile()}
+
+
+    //increment turn
     turns++
-    document.getElementById("add").innerText = "Record turn " + " (" + turns + " of 71)"
-
-
+  
+    if (turns > 0){
+      document.getElementById("add").innerText = "Record turn " + " (" + turns + " of 71)"
+    }
     
+
     if (turns >= 72){
     document.getElementById("add").innerText = "Game ended"
     document.getElementById("add").disabled = true;
@@ -656,7 +696,7 @@ function closeModal() {
 }
 
 
-
+///Not my code, got from https://stackoverflow.com/a/48550997
 function download(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+'-'+today.getTime();
