@@ -309,7 +309,7 @@ textarea {
   height: 15vh;
   margin-top: 1vh;
   overflow: auto;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 
@@ -449,7 +449,7 @@ textarea {
           <div class="tab">Log</div>
             <div class="twoColumns"> 
               <div class="flex-left-text">
-              <textarea id="log" spellcheck="false"></textarea>
+              <textarea id="log" spellcheck="false" autocomplete="off"></textarea>
               </div>
               <div class="flex-right">
                 <button id="export" class="bigfont" onclick="download()">Export</button>
@@ -477,7 +477,7 @@ textarea {
     //start all variables and things needed to be blank every new turn.
     function setDefault(){
       window.identity  = ""
-      window.orientation_angle = 0
+      window.orientation_angle = -90
       window.cardinal = "N"
       window.tileRotations = 0
       loadtile()
@@ -486,8 +486,11 @@ textarea {
       document.getElementById("role").value = "";
       document.getElementById("Ascore").value = "0";
       document.getElementById("Bscore").value = "0";
+      document.getElementById("posx").value = "0";
+      document.getElementById("posy").value = "0";
       document.getElementById("pennant").checked = false;
       document.querySelector('#modifier').value = "";
+      rotate()
 
     }
     
@@ -530,7 +533,8 @@ function imageFound() {
 
 function imageNotFound() {
     // alert('That image was not found.' + identity);
-    document.getElementById("tile").src = "tiles/no.jpg";
+    identity = "no"
+    document.getElementById("tile").src  = "tiles/" + identity + ".jpg";
     if (document.getElementById("role").value != ""){showMeeplePosition()}
     document.getElementById("orientation").innerText = "Not a valid tile" 
     document.getElementById("tile").style.pointerEvents = "none";
@@ -549,6 +553,12 @@ function rotate() {
   if(orientation_angle-(360*tileRotations) == 180){cardinal = "S"}
   if(orientation_angle-(360*tileRotations) == 270){cardinal = "W"}
   document.getElementById("orientation").innerText = cardinal 
+
+  //also rotate the meeple position tile
+  if (document.getElementById("role").value != ""){
+    document.getElementById("meeplePositionTile").setAttribute("style", "transform: rotate(" + orientation_angle + "deg);transition: all 0.4s;-webkit-transition: all 0.4s;filter: grayscale(100%);");
+  }
+
 }
 //// End Tile rotation
 
@@ -560,7 +570,7 @@ function showMeeplePosition(){
   }else{
     document.getElementById("meeplePositionContainer").style.display = "block";
     document.getElementById("meeplePositionTile").src = "tiles/" + identity + ".jpg";
-    document.getElementById("meeplePositionTile").setAttribute("style", "filter: grayscale(100%);");
+    document.getElementById("meeplePositionTile").setAttribute("style", "transform: rotate(" + orientation_angle + "deg);filter: grayscale(100%);");
   }
   
   
@@ -590,7 +600,7 @@ function recordTurn(){
       playerIdentity = "A"
     } 
 
-    document.getElementById("add").innerText = "Record turn " + " (" + turns + " of 71)"
+    
 
 
     //add turn to list
@@ -612,7 +622,9 @@ function recordTurn(){
 
 
     turns++
+    document.getElementById("add").innerText = "Record turn " + " (" + turns + " of 71)"
 
+    
       //scroll to the bottom of the textarea
       textArea.scrollTop = textArea.scrollHeight;
 
