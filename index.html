@@ -15,47 +15,57 @@
   <style>
 
 
-@media all and (orientation: landscape) {
+
+html, body {
+  font-size: 3.5vh;
+  font-family: carcaFont;
+}
+
+
+#content {
+  display: flex; 
+  flex-direction: column; 
+  height: 99%;
+  text-align: center;
+}
+
+#content > div, nav{
+  flex: 1;
+}
+
+
+@media only screen and (orientation: landscape) {
   html, body{
-    max-width:500px;
+    font-size: 3.25vh;
+    max-width:1000px;
     margin-left: auto;
     margin-right: auto;
     height: 99%;
-  font-size: 3.5vh;
-  font-family: carcaFont;
   }
+
+  #content {
+    flex-wrap: wrap;
+  }
+
+  #content > div{
+  width: 48%;
+
 }
 
-@media all and (orientation: portrait) {
-html, body {
-  height: 99%;
-  margin: 0;
-  font-size: 3.5vh;
-  font-family: carcaFont;
+  nav {
+    flex-basis: 100%;
+    order: 1;
+    width: 48%;
+    
+  }
+
+  textarea{
+    height: 76vh;
+  }
+
 
 }
-}
 
-
-
-#wrapper {
-  display: flex; 
-  flex-direction: column; 
-  height: 100%;
-  
-}
-#header, #footer {
-  /* height: 15vh; */
-  padding: 1.5%;
-  text-align: center;
-  min-height: 60px;
-
-} 
-#content {
-  flex: 1; 
-  overflow: auto; 
-  text-align: center;
-}
 
 
 
@@ -64,6 +74,8 @@ html, body {
     max-height:60%;
 
 }
+
+
 
 
 #meeplePositionContainer{
@@ -284,11 +296,6 @@ button:disabled  {
     /* margin:auto; */
 }
 
-.flex-left-text {
-    width: 60%;
-    margin:auto;
-}
-
 
 .flex-right {
     /* width: 40%; */
@@ -296,10 +303,23 @@ button:disabled  {
 }
 
 
+#flex-left-text {
+    width: 60%;
+    margin:auto;
+}
+
+#flex-right-text {
+    /* width: 40%; */
+    margin:auto;
+}
+
+
 textarea {
+  font-size: 1.9vh;
   resize: none;
-  width: 100%;
-  height: 15vh;
+  width: 90%;
+  /* height: 15vh; */
+  min-height:15vh;
   margin-top: 1vh;
   overflow: auto;
   /* white-space: nowrap; */
@@ -336,8 +356,10 @@ textarea {
 </div> --> 
 
 
-<div id="wrapper">
-    <div id="content">
+<div id="content">
+
+<div id="selection">
+
       <div id="coordinates" class="box">
         <div class="tab">Coordinates</div>
         <label for="posx">Pos. X</label>
@@ -348,7 +370,7 @@ textarea {
       </div>
      
         
-    <div class="box">
+    <div id="tileidentity" class="box">
       <div class="tab">Tile identity</div>
         <select name="id1" id="id1" class="cityedge tileloader">
             <option value="c">c</option>
@@ -384,21 +406,24 @@ textarea {
 
         <input type="checkbox" id="pennant" name="pennant" class="tileloader">
         <label for="pennant"> Pennant?</label>
+
+        <br> <br>
+        <span id="trashcan" onclick="discardTile()">🗑Discard tile</span>   
       </div>
 
 
-        <div class="flex-right">
+        <div id="tile-cancel-orientation" class="flex-right">
+        
 
-        <img id="tile" class="tiles">
+        <img id="tile" class="tiles"> 
+
         <br>
         <span id="orientation">N</span>
+       
       </div>
 
       </div>
       </div>
-
-
-
 
 
           <div id="roles" class="box">
@@ -441,20 +466,23 @@ textarea {
     
           </div>
 
-
-
-
+        <div>
         <button id="add" class="bigfont" onclick="recordTurn()">Record starting tile</button>
+        </div>
+       
+      </div>
 
-        <br>
 
-        <div class="box">
+        <nav>
+        <div id="logbox" class="box">
           <div class="tab">Log</div>
-            <div class="twoColumns"> 
-              <div class="flex-left-text">
+            <!-- <div id="twocolumnsbox" class="twoColumns">  -->
+              <!-- <div id="flex-left-text"> -->
+              <div>
               <textarea id="log" spellcheck="false" autocomplete="off"></textarea>
               </div>
-              <div class="flex-right">
+              <div>
+              <!-- <div id="flex-right-text"> -->
                 <button id="export" class="bigfont" onclick="download()">Export</button>
                 <br>
                 <div id="attribution"><a href="https://www.carcassonnecentral.com/community/index.php?topic=5644.0">CGN proposed by DIN0</a>
@@ -464,8 +492,11 @@ textarea {
               </div>
             </div>
         </div>
+      </div>
+      </nav>
 
-</div>
+    </div>
+
 
 <script>
     //listeners
@@ -511,7 +542,7 @@ function startTile(){
     for (var i = 0; i < inputs.length; i++) { 
         inputs[i].disabled = "disabled";
     } 
-    var labels = document.querySelectorAll("label"); 
+    var labels = document.querySelectorAll("label,#trashcan"); 
     for (var i = 0; i < labels.length; i++) { 
       labels[i].style.color = "#9E9E9E";
     } 
@@ -529,7 +560,7 @@ function cleanStartTile(){
     for (var i = 0; i < inputs.length; i++) { 
         inputs[i].disabled = "";
     } 
-    var labels = document.querySelectorAll("label"); 
+    var labels = document.querySelectorAll("label,#trashcan"); 
     for (var i = 0; i < labels.length; i++) { 
       labels[i].style.color = "black";
     } 
@@ -605,6 +636,28 @@ function rotate() {
 //// End Tile rotation
 
 
+////Discard tile
+window.discardedTiles = ""
+window.numDiscardedTiles = 0
+function discardTile(){
+if (turns > 0){
+
+  var confirmTileDiscard = confirm("Do you want to discard the tile: " + identity + "?");
+  if (confirmTileDiscard==true)  
+  {
+    numDiscardedTiles += 1
+    discardedTiles += "(X)" + identity + "(X)"
+    setDefault()
+    document.getElementById("trashcan").innerHTML = "🗑Discard tile <small>(" + numDiscardedTiles + ")</small>"
+  }
+}
+  
+}
+
+
+
+
+
 /// meeple position
 function showMeeplePosition(){
   if (document.getElementById("role").value == ""){
@@ -639,6 +692,7 @@ function recordTurn(){
     textArea.value += (turns > 0 ? turns + ". " : "")
     + (turns > 0 ? playerIdentity : "") 
     + (turns > 0 ? ":" : "")
+    + (discardedTiles != "" ? discardedTiles + ":" : "")
     + "[" + ((posx.value > 0) ? "+"+posx.value : posx.value) 
     + ";"
     + ((posy.value > 0) ? "+"+posy.value : posy.value) 
@@ -657,6 +711,11 @@ function recordTurn(){
 
     //clean everything
     setDefault()
+
+    //clean discardedtiles
+    discardedTiles = ""
+    numDiscardedTiles = 0
+    document.getElementById("trashcan").innerHTML = "🗑Discard tile"
 
     //exit from startTile mode
     if (turns == 0){cleanStartTile()}
