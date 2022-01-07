@@ -331,6 +331,14 @@ textarea {
   line-height: 2vh !important;
 }
 
+
+#trashcanIcon{
+  height: 3vh;
+  width: 3vh;
+}
+
+
+
   </style>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -408,7 +416,14 @@ textarea {
         <label for="pennant"> Pennant?</label>
 
         <br> <br>
-        <span id="trashcan" onclick="discardTile()">🗑Discard tile</span>   
+        <svg onclick="discardTile()" id="trashcanIcon" enable-background="new 0 0 465.311 465.311" version="1.1" viewBox="0 0 465.311 465.311" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+          <path d="m372.81 51.002h-59.908v-14.436c-1e-3 -20.162-16.404-36.566-36.568-36.566h-87.356c-20.163 0-36.567 16.404-36.567 36.566v14.436h-59.912c-20.726 0-37.587 16.861-37.587 37.587v38.91c0 8.284 6.716 15 15 15h7.728v307.81c0 8.284 6.716 15 15 15h280.03c8.284 0 15-6.716 15-15v-307.81h7.728c8.284 0 15-6.716 15-15v-38.91c-1e-3 -20.726-16.862-37.587-37.587-37.587zm-190.4-14.436c0-3.621 2.946-6.566 6.567-6.566h87.356c3.621 0 6.567 2.946 6.567 6.566v14.436h-100.49v-14.436zm-97.498 52.023c0-4.184 3.403-7.587 7.587-7.587h280.31c4.184 0 7.587 3.403 7.587 7.587v23.91h-295.48v-23.91zm272.76 346.72h-250.03v-292.81h250.03v292.81z"/>
+          <path d="m137.41 413.48c5.523 0 10-4.477 10-10v-236.99c0-5.523-4.477-10-10-10s-10 4.477-10 10v236.99c0 5.523 4.477 10 10 10z"/>
+          <path d="m200.91 413.48c5.523 0 10-4.477 10-10v-236.99c0-5.523-4.477-10-10-10s-10 4.477-10 10v236.99c0 5.523 4.477 10 10 10z"/>
+          <path d="m264.4 413.48c5.523 0 10-4.477 10-10v-236.99c0-5.523-4.477-10-10-10s-10 4.477-10 10v236.99c0 5.523 4.477 10 10 10z"/>
+          <path d="m327.9 413.48c5.523 0 10-4.477 10-10v-236.99c0-5.523-4.477-10-10-10s-10 4.477-10 10v236.99c0 5.523 4.477 10 10 10z"/>
+        </svg>
+        <span id="trashcan" onclick="discardTile()">Discard</span>   
       </div>
 
 
@@ -546,6 +561,7 @@ function startTile(){
     for (var i = 0; i < labels.length; i++) { 
       labels[i].style.color = "#9E9E9E";
     } 
+    document.getElementById("trashcanIcon").style.fill = "#9E9E9E";
   }
 }
 
@@ -564,6 +580,7 @@ function cleanStartTile(){
     for (var i = 0; i < labels.length; i++) { 
       labels[i].style.color = "black";
     } 
+    document.getElementById("trashcanIcon").style.fill = "black";
   }
 
 
@@ -648,9 +665,9 @@ if (turns > 0){
   if (confirmTileDiscard==true)  
   {
     numDiscardedTiles += 1
-    discardedTiles += "(X)" + identity + "(X)"
+    discardedTiles += "(X)" + identity + "(X):"
     setDefault()
-    document.getElementById("trashcan").innerHTML = "🗑Discard tile <small>(" + numDiscardedTiles + ")</small>"
+    document.getElementById("trashcan").innerHTML = "Discard <small>(" + numDiscardedTiles + ")</small>"
   }
 }
   
@@ -694,7 +711,7 @@ function recordTurn(){
     textArea.value += (turns > 0 ? turns + ". " : "")
     + (turns > 0 ? playerIdentity : "") 
     + (turns > 0 ? ":" : "")
-    + (discardedTiles != "" ? discardedTiles + ":" : "")
+    + (discardedTiles != "" ? discardedTiles : "")
     + "[" + ((posx.value > 0) ? "+"+posx.value : posx.value) 
     + ";"
     + ((posy.value > 0) ? "+"+posy.value : posy.value) 
@@ -717,7 +734,7 @@ function recordTurn(){
     //clean discardedtiles
     discardedTiles = ""
     numDiscardedTiles = 0
-    document.getElementById("trashcan").innerHTML = "🗑Discard tile"
+    document.getElementById("trashcan").innerHTML = "Discard"
 
     //exit from startTile mode
     if (turns == 0){cleanStartTile()}
